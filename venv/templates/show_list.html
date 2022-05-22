@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang ="en">
+    <head></head>
+    <body>
+        <h5>
+            <a href = "{{ url_for('index') }}">Go to Main</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Student_ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.s_id }}</td>
+                    <td>{{ student.s_name }}</td>
+                    <td><a href="{{ url_for('update', student_id = student.id) }}">edit</a></td>
+                    <td><a href="{{ url_for('delete', student_id = student.id) }}">delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>           
+        </h5>
+    </body>
+</html>

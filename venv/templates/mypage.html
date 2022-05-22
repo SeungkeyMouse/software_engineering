@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>마이페이지</h1>
+
+    <h2>내 정보</h2>
+    {% for member in members %}
+    <div>
+        ID: {{ member.m_id }}
+        Email: {{ member.m_email }}
+        Name: {{ member.m_name }}         
+    </div>
+    {% endfor %}
+    <h2>Followee</h2>
+    <div>
+        <li>
+                {% for member in members %}
+                <ul>
+                    <li>{{ member.m_id }}</li>
+                </ul>
+                {% endfor %}
+        </li>
+    </div>
+
+    <h2>제품 리스트</h2>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sold</th>
+                    <th>제목</th>
+                    <th>수정하기</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.p_sold }}</td>
+                    <td>{{ product.p_title }}</td>
+                    {% comment %} <td><a href="{{ url_for('update', product_id = product.p_id) }}">수정</a></td> {% endcomment %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
