@@ -3,7 +3,9 @@
 
 <head>
     <title>Home Page</title>
-    <link rel="stylesheet" href="Css/style2.css">
+    <link href="{{ url_for('static', filename='Css/style2.css') }}"
+              rel="stylesheet"
+    />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
           rel="stylesheet"
     />
@@ -34,7 +36,12 @@
          
         {% endif %}
 
-
+    </div>
+    
+    <div class="searching">
+        <h1>Jeegle</h1>
+        <input type="text">
+        <input type="button" value="search">
     </div>
 
      

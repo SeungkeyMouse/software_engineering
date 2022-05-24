@@ -11,6 +11,16 @@ body{
     
 }
 
+button[type="button"]{
+    border: 0.5;
+    background-color: #ffedc9;
+    
+}
+input[type="submit"]{
+    border: 0.5;
+    background-color: #ffedc9;
+    
+}
 input[type="button"]{
     border: 0.5;
     background-color: #ffedc9;
