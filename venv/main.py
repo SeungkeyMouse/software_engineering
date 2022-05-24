@@ -1,4 +1,4 @@
-from flask import Flask, request, flash, url_for, redirect, render_template
+from flask import Flask, request, flash, session, url_for, redirect, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import null
@@ -20,6 +20,12 @@ class product(db.Model):#상품
         self.p_keyword = keyword
         self.p_content = content
         self.p_sold = sold
+# 팔로워 테이블 폼
+# (외래 키 이외의 데이터가 없는 보조 테이블이기 때문에 모델 클래스 없이 생성함)        
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+)
         
 class member(db.Model):#회원
     id = db.Column(db.Integer, primary_key = True, unique = True, autoincrement = True)
@@ -28,12 +34,49 @@ class member(db.Model):#회원
     m_email = db.Column(db.String(100))
     m_name = db.Column(db.String(30))
     #follower<=>followee 추가필요
+    followed = db.relationship(
+        'member', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+    
     def __init__(self, id, pw, email, name):
         self.m_id = id
         self.m_pw = pw
         self.m_email = email
         self.m_name = name
         
+    # user가 self에 follow하기
+    def follow(self, user):
+        if not self.is_following(user): # follow 상태가 아닌지 확인
+            self.followed.append(user)  # user가 self에 follow
+    # user가 self에 되어있는 follow 제거
+    def unfollow(self, user):
+        if self.is_following(user):     # follow 상태인지 확인
+            self.followed.remove(user)  # user가 self에 follow
+    # 두 사용자 간의 링크가 존재하는지 확인
+    def is_following(self, user):
+        return self.followed.filter(
+            followers.c.followed_id == user.id).count() > 0
+        
+# 팔로우 routes 설정
+# username을 팔로우 시도
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('User {} not found.'.format(username))
+        return redirect(url_for('index'))
+    if user == current_user:
+        flash('You cannot follow yourself!')
+        return redirect(url_for('user', username=username))
+    current_user.follow(user)
+    db.session.commit()
+    flash('You are following {}!'.format(username))
+    return redirect(url_for('user', username=username))   
+
+
 
 # 기본화면1 - 상품목록+로그인(지원파트) + 로그인시만 가능한 기능ui 권한추가(상품수정,글쓰기)
 @app.route('/')
