@@ -54,10 +54,28 @@ def home():
 		userid = session.get('userid') 
 		return render_template('home.html', userid=userid)
 
+
+# 마이페이지
+@app.route('/mypage', methods = ['GET', 'POST'])
+def my_page():
+ if request.method == 'POST':#=> POST요청 왔을때
+   
+        return redirect('/')
+ return render_template('mypage.html'
+                        # , members = member.query.all()
+                        # , products =product.query.all()
+                        )
+
+
+
+
+
+
+
 @app.route('/login', methods=['GET', 'POST'])	
 def login():
 	if request.method=='GET':
-		return render_template('login.html')
+		return render_template('home.html')
 	else:
 		userid = request.form['userid']
 		password = request.form['password']

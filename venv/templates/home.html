@@ -1,23 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head></head>
+<head>
+    <title>Home Page</title>
+    <link rel="stylesheet" href="Css/style2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+          rel="stylesheet"
+    />
+</head>
 
 <body>
 
     {% block content %}
 
-    <div class="jumbo">
-        <h2>Hello Flask App</h2>
+    <div class="intro">
+        
         {% if session['userid'] %}
         <h4>{{ userid }}님 요청 처리에 대한 페이지입니다.</h4>
         <button type="button" onclick="location.href='/logout' ">로그 아웃</button>
+        <button type="button" onclick="location.href='/mypage' ">마이페이지</button>
         {% else %}
-        <h4>Hello World!</h4>
-        <button type="button" onclick="location.href='/register' ">등록하기</button>
-        <button type="button" onclick="location.href='/login' ">로그인</button>
+        
+        <form action="/login" method="POST">
+            <label>ID</label>
+            <input type="userid" name="userid" placeholder="Userid">
+            <input type="submit" value="로그인">
+            <br>
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Password">
+            <button type="button" onclick="location.href='/register' ">signup</button>
+        <form>
+
+         
         {% endif %}
+
+
     </div>
+
+     
     {% endblock %}
 </body>
 
