@@ -27,12 +27,14 @@ followers = db.Table('followers',
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
         
-class member(db.Model):#회원
+class User(db.Model):#회원
+    __tablename__ = 'users'   #테이블 이름 : users
+
     id = db.Column(db.Integer, primary_key = True, unique = True, autoincrement = True)
-    m_id = db.Column(db.String(30)) 
-    m_pw = db.Column(db.String(100))
-    m_email = db.Column(db.String(100))
-    m_name = db.Column(db.String(30))
+    u_id = db.Column(db.String(30)) 
+    u_pw = db.Column(db.String(100))
+    u_email = db.Column(db.String(100))
+    u_name = db.Column(db.String(30))
     #follower<=>followee 추가필요
     followed = db.relationship(
         'member', secondary=followers,
@@ -41,10 +43,10 @@ class member(db.Model):#회원
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
     
     def __init__(self, id, pw, email, name):
-        self.m_id = id
-        self.m_pw = pw
-        self.m_email = email
-        self.m_name = name
+        self.u_id = id
+        self.u_pw = pw
+        self.u_email = email
+        self.u_name = name
         
     # user가 self에 follow하기
     def follow(self, user):
@@ -60,21 +62,21 @@ class member(db.Model):#회원
             followers.c.followed_id == user.id).count() > 0
         
 # 팔로우 routes 설정
-# username을 팔로우 시도
-@app.route('/follow/<username>')
-@login_required
-def follow(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        flash('User {} not found.'.format(username))
-        return redirect(url_for('index'))
-    if user == current_user:
-        flash('You cannot follow yourself!')
-        return redirect(url_for('user', username=username))
-    current_user.follow(user)
-    db.session.commit()
-    flash('You are following {}!'.format(username))
-    return redirect(url_for('user', username=username))   
+######## username을 팔로우 시도 ############
+# @app.route('/follow/<username>')
+# @login_required
+# def follow(username):
+#     user = User.query.filter_by(username=username).first()
+#     if user is None:
+#         flash('User {} not found.'.format(username))
+#         return redirect(url_for('index'))
+#     if user == current_user:
+#         flash('You cannot follow yourself!')
+#         return redirect(url_for('user', username=username))
+#     current_user.follow(user)
+#     db.session.commit()
+#     flash('You are following {}!'.format(username))
+#     return redirect(url_for('user', username=username))   
 
 
 
@@ -108,33 +110,45 @@ def update(student_id):
                 # return redirect(url_for('show_students'))
  
     # return render_template('edit.html', student = update_student)#add_new.html =>GET요청왔을때 폼
-    return render_template('edit.html', members = member.query.all())
+    return render_template('edit.html', users = User.query.all())
 
     
 # 추가(POST) - 상품 등록/수정 (승기파트) + 로그인시만 가능한 권한추가
 @app.route('/add_post', methods = ['GET', 'POST'])
 def add_post():
- if request.method == 'POST':#=> POST요청 왔을때
-    if not request.form['p_title'] or not request.form['p_keyword'] or not request.form['p_content']:
-        flash('Please enter all the fields', 'error')
-    else:
-        pd = product(request.form['p_title'],
-                          request.form['p_keyword'], 
-                          request.form['p_content'],
-                            False if request.form.get('p_sold')==None else True
-                          )
-        db.session.add(pd)
-        print(pd.p_sold)
-        try:
-            db.session.commit()
-        except SQLAlchemyError as e:
-            reason=str(e)
-            flash(reason)
- 
-        flash('Record was successfully added')
-        return redirect(url_for('index'))
- return render_template('add_post.html') #add_new.html =>GET요청왔을때 폼
+  #로그인 세션정보('userid')가 있을 경우
+	if not session.get('userid'):  
+		return render_template('home.html')
+	
+	#로그인 세션정보가 없을 경우
+	else:		
+		userid = session.get('userid') 
+		if request.method == 'POST':#=> POST요청 왔을때
+      
+            if not request.form['p_title'] or not request.form['p_keyword'] or not request.form['p_content']:
+                flash('Please enter all the fields', 'error')
+            else:
+                pd = product(request.form['p_title'],
+                                    request.form['p_keyword'], 
+                                    request.form['p_content'],
+                                        False if request.form.get('p_sold')==None else True
+                                    )
+                db.session.add(pd)
+                print(pd.p_sold)
+                try:
+                    db.session.commit()
+                except SQLAlchemyError as e:
+                    reason=str(e)
+                    flash(reason)
+                    flash('Record was successfully added')
+                    return redirect(url_for('index'))
+                return render_template('add_post.html') #add_new.html =>GET요청왔을때 폼    
 
+    
+
+
+
+    
 
 # 마이페이지
 @app.route('/mypage', methods = ['GET', 'POST'])

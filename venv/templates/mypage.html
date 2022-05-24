@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Mypage</title>
 </head>
 
 <body>
     <h1>마이페이지</h1>
-<!-- 
     <h2>내 정보</h2>
     {% for member in members %}
     <div>
-        ID: {{ member.m_id }}
-        Email: {{ member.m_email }}
-        Name: {{ member.m_name }}         
+        ID: {{ member.userid }}
+        <br>
+        Email: {{ member.id }}
+        <br>
+        Name: {{ member.username }}         
     </div>
     {% endfor %}
     <h2>Followee</h2>
@@ -22,7 +22,7 @@
         <li>
                 {% for member in members %}
                 <ul>
-                    <li>{{ member.m_id }}</li>
+                    <li>{{ member.userid }}</li>
                 </ul>
                 {% endfor %}
         </li>
@@ -43,12 +43,11 @@
                 <tr>
                     <td>{{ product.p_sold }}</td>
                     <td>{{ product.p_title }}</td>
-                    {% comment %} <td><a href="{{ url_for('update', product_id = product.p_id) }}">수정</a></td> {% endcomment %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div> -->
+    </div> 
 </body>
 
 </html>

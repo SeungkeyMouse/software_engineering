@@ -62,7 +62,7 @@ def my_page():
    
         return redirect('/')
  return render_template('mypage.html'
-                        # , members = member.query.all()
+                        ,  members = User.query.filter_by(userid = session.get('userid')).all()
                         # , products =product.query.all()
                         )
 
