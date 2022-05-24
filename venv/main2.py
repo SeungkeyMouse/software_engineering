@@ -19,6 +19,42 @@ class User(db.Model):
     username = db.Column(db.String(8))
     password = db.Column(db.String(64))
     
+class product(db.Model):#상품
+    p_id = db.Column(db.Integer, primary_key = True, unique = True, autoincrement = True)
+    p_title = db.Column(db.String(50))
+    p_keyword = db.Column(db.String(50))
+    p_content = db.Column(db.String(100))
+    p_sold = db.Column(db.String(2))
+    u_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    b = db.relationship('User', backref=db.backref('product_by_main', uselist=False))
+    #상품이미지 저장하는방법 추가필요
+    def __init__(self, title, keyword, content, sold, u_id):
+        self.p_title = title
+        self.p_keyword = keyword
+        self.p_content = content
+        self.p_sold = sold
+        self.u_id = u_id
+# 추가(POST) - 상품 등록/수정 (승기파트) + 로그인시만 가능한 권한추가
+@app.route('/add_post', methods = ['GET', 'POST'])
+def add_post():
+	if request.method =='GET':
+		if not session.get('userid'):  #로그인 세션정보('userid')가 있을 경우
+			return render_template('home.html')
+		else:#로그인 세션정보가 없을 경우		
+			return render_template('add_post.html')
+	else:#POST요청인경우
+		user = User.query.filter_by(userid = session.get('userid')).first()
+		pd = product(
+      				request.form['p_title'],
+                    request.form['p_keyword'], 
+                    request.form['p_content'],
+                    "O" if request.form.get('p_sold')==None else "X",
+                    user.id
+    	            )
+		db.session.add(pd)
+		db.session.commit()
+		return render_template('home.html')
+
 @app.route('/register', methods=['GET','POST'])
 def register():
 	if request.method =='GET':
