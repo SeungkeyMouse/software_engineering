@@ -11,13 +11,16 @@ app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///gogle2.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
+
 class User(db.Model):
     __tablename__ = 'users'   #테이블 이름 : users
 
     id = db.Column(db.Integer, primary_key = True)   #id를 프라이머리키로 설정
-    userid = db.Column(db.String(32))
+    userid = db.Column(db.String(32), unique=True)
     username = db.Column(db.String(8))
     password = db.Column(db.String(64))
+   
+
     
 class product(db.Model):#상품
     p_id = db.Column(db.Integer, primary_key = True, unique = True, autoincrement = True)
@@ -25,7 +28,7 @@ class product(db.Model):#상품
     p_keyword = db.Column(db.String(50))
     p_content = db.Column(db.String(100))
     p_sold = db.Column(db.String(2))
-    u_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    u_id = db.Column(db.String(32), db.ForeignKey('users.userid'))
     b = db.relationship('User', backref=db.backref('product_by_main', uselist=False))
     #상품이미지 저장하는방법 추가필요
     def __init__(self, title, keyword, content, sold, u_id):
@@ -34,6 +37,12 @@ class product(db.Model):#상품
         self.p_content = content
         self.p_sold = sold
         self.u_id = u_id
+        
+class follower_following:
+    id = db.Column(db.Integer, primary_key= True)
+    follower_id = db.Column(db.String(32))
+    followee_id = db.Column(db.String(32))
+    
 # 추가(POST) - 상품 등록/수정 (승기파트) + 로그인시만 가능한 권한추가
 @app.route('/add_post', methods = ['GET', 'POST'])
 def add_post():
@@ -48,12 +57,12 @@ def add_post():
       				request.form['p_title'],
                     request.form['p_keyword'], 
                     request.form['p_content'],
-                    "O" if request.form.get('p_sold')==None else "X",
-                    user.id
+                    "X" if request.form.get('p_sold')==None else "O",
+                    user.userid
     	            )
 		db.session.add(pd)
 		db.session.commit()
-		return render_template('home.html')
+		return redirect('/')
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -76,35 +85,44 @@ def register():
 			user.username = username
 			db.session.add(user)
 			db.session.commit()
-			return "회원가입 완료"
-		return redirect('/')
-
+			return redirect('/')
+		
+	
 @app.route('/')
 def home():
 	#로그인 세션정보('userid')가 있을 경우
 	if not session.get('userid'):  
-		return render_template('home.html')
+		return render_template('home.html', products =product.query.all())
 	
 	#로그인 세션정보가 없을 경우
 	else:		
 		userid = session.get('userid') 
-		return render_template('home.html', userid=userid)
-
+		return render_template('home.html', userid=userid, products =product.query.all())
+#팔로우기능
+# @app.route('/follow')
+# def follow():
+#     if not session.get('userid'):
+#         return render_template('home.html', products =product.query.all())
+#     else:
+        
 
 # 마이페이지
 @app.route('/mypage', methods = ['GET', 'POST'])
 def my_page():
- if request.method == 'POST':#=> POST요청 왔을때
-   
-        return redirect('/')
- return render_template('mypage.html'
-                        ,  members = User.query.filter_by(userid = session.get('userid')).all()
-                        # , products =product.query.all()
-                        )
-
-
-
-
+	if request.method == 'POST':#=> POST요청 왔을때
+	
+			return redirect('/')
+	skey= 1
+	#print(type(skey))
+	user_id = session.get('userid')
+	#print(type(user_id))
+	user = User.query.filter_by(userid = session.get('userid')).first()
+	#print(user.id)
+	
+	return render_template('mypage.html'
+							,  members = User.query.filter_by(userid = session.get('userid')).all()
+							, products =product.query.filter_by(u_id = user.id).all()
+							)
 
 
 

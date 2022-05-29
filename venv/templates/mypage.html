@@ -35,7 +35,7 @@
                 <tr>
                     <th>Sold</th>
                     <th>제목</th>
-                    <th>수정하기</th>
+                    <th>작성자(팔로우)</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,6 +43,7 @@
                 <tr>
                     <td>{{ product.p_sold }}</td>
                     <td>{{ product.p_title }}</td>
+                    <td>{{ product.u_id }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
