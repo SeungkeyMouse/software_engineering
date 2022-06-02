@@ -121,7 +121,7 @@ def my_page():
 	
 	return render_template('mypage.html'
 							,  members = User.query.filter_by(userid = session.get('userid')).all()
-							, products =product.query.filter_by(u_id = user.id).all()
+							, products =product.query.filter_by(u_id = user.userid).all()
 							)
 
 
