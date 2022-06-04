@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 
@@ -90,6 +91,8 @@ def register():
 	
 @app.route('/')
 def home():
+    
+    
 	#로그인 세션정보('userid')가 있을 경우
 	if not session.get('userid'):  
 		return render_template('home.html', products =product.query.all())
@@ -123,6 +126,17 @@ def my_page():
 							,  members = User.query.filter_by(userid = session.get('userid')).all()
 							, products =product.query.filter_by(u_id = user.userid).all()
 							)
+
+
+
+# 키워드서치
+@app.route('/keywordSearch',methods=['GET','POST'])
+def keywordSearch():
+    if request.method =='POST':
+        kk=request.form['kk']
+        return render_template('keywordSearch.html',products =product.query.filter_by(p_keyword = kk).all()) 
+        
+   
 
 
 
