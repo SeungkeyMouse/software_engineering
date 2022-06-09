@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <form action="{{ url_for('add_post') }}" method="POST">
+    <form action="{{ url_for('add_post') }}" method="POST" enctype = "multipart/form-data">
         
         <h3>제목:</h3>
         <input type="text" name="p_title"><br>

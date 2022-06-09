@@ -1,7 +1,7 @@
-from crypt import methods
+# from crypt import methods
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
-
+import os
 
 app = Flask(__name__)
 
@@ -10,6 +10,11 @@ app.secret_key="123123123"
 # database 설정파일
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///gogle2.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+#파일업로드
+file_location = '/Users/ksg19/software_engineering/venv/static/uploads'
+app.config['UPLOAD_FOLDER'] = file_location
+
 db = SQLAlchemy(app)
 
 
@@ -27,38 +32,59 @@ class product(db.Model):#상품
     p_id = db.Column(db.Integer, primary_key = True, unique = True, autoincrement = True)
     p_title = db.Column(db.String(50))
     p_keyword = db.Column(db.String(50))
-    p_content = db.Column(db.String(100))
+    p_content = db.Column(db.String(200))
     p_sold = db.Column(db.String(2))
+    p_img = db.Column(db.String(200))
     u_id = db.Column(db.String(32), db.ForeignKey('users.userid'))
     b = db.relationship('User', backref=db.backref('product_by_main', uselist=False))
     #상품이미지 저장하는방법 추가필요
-    def __init__(self, title, keyword, content, sold, u_id):
+    def __init__(self, title, keyword, content, sold, img, u_id):
         self.p_title = title
         self.p_keyword = keyword
         self.p_content = content
         self.p_sold = sold
+        self.p_img = img
         self.u_id = u_id
         
 class follower_following:
-    id = db.Column(db.Integer, primary_key= True)
-    follower_id = db.Column(db.String(32))
-    followee_id = db.Column(db.String(32))
+    id = db.Column(db.Integer,autoincrement = True, primary_key= True)
+    follower_id = db.Column(db.String(32))#나
+    followee_id = db.Column(db.String(32))#내가 팔로우하는 인간들
     
+    #follow생성
+    def __init__(self, myid, yourid):
+        self.follower_id = myid;
+        self.followee_id = yourid;
+@app.route('/follow', methods = ['POST'])
+def follow():
+    if request.method=="POST":
+        user = User.query.filter_by(userid = session.get('userid')).first()
+        print(user.userid)
+     
+
+        
+
 # 추가(POST) - 상품 등록/수정 (승기파트) + 로그인시만 가능한 권한추가
 @app.route('/add_post', methods = ['GET', 'POST'])
 def add_post():
 	if request.method =='GET':
-		if not session.get('userid'):  #로그인 세션정보('userid')가 있을 경우
+		if not session.get('userid'):  #로그인 세션정보('userid')가 없을 경우
 			return render_template('home.html')
-		else:#로그인 세션정보가 없을 경우		
+		else:#로그인 세션정보가 있을 경우		
 			return render_template('add_post.html')
 	else:#POST요청인경우
+		f = request.files['photo']
+		f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
+		f_path = file_location + '/' + f.filename
+		print(f_path)
+  
 		user = User.query.filter_by(userid = session.get('userid')).first()
 		pd = product(
       				request.form['p_title'],
                     request.form['p_keyword'], 
                     request.form['p_content'],
                     "X" if request.form.get('p_sold')==None else "O",
+                    f_path,
                     user.userid
     	            )
 		db.session.add(pd)
