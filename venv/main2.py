@@ -12,7 +12,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///gogle2.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 #파일업로드
-file_location = '/Users/ksg19/software_engineering/venv/static/uploads'
+file_location = '/Users/jiwon/Documents/GitHub/software_engineering/venv/static/uploads'
 app.config['UPLOAD_FOLDER'] = file_location
 
 db = SQLAlchemy(app)
@@ -162,8 +162,11 @@ def keywordSearch():
         kk=request.form['kk']
         return render_template('keywordSearch.html',products =product.query.filter_by(p_keyword = kk).all()) 
         
-   
-
+# 제품상세페이지
+@app.route('/show_post/<int:id>')
+def show_post(id):
+    return render_template('show_post.html',products =product.query.filter_by(p_id = id).first()) 
+        
 
 
 @app.route('/login', methods=['GET', 'POST'])	
@@ -192,3 +195,4 @@ def logout():
 if __name__ == '__main__':
     db.create_all()
     app.run()
+

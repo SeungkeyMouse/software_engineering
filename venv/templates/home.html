@@ -65,7 +65,7 @@
                 {% for product in products %}
                 <tr>
                     <td>{{ product.p_sold }}</td>
-                    <td>{{ product.p_title }}</td>
+                    <td><a href="/show_post/{{ product.p_id }}">{{ product.p_title }}</a></td>
                     <td>{{ product.u_id }}</td>
                 </tr>
                 {% endfor %}

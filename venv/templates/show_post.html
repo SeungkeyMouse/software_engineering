@@ -2,21 +2,18 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home Page</title>
+    <link href="{{ url_for('static', filename='Css/style2.css') }}"
+              rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+          rel="stylesheet"
+    />
 </head>
 
 <body>
-    <h3>{{product.p_title}}</h3>
-    <h4>{{prodouct.p_keyword}}</h4>
-    <img src={{product.p_pic}} alt="">
-    <div>
-        {{product.p_content}}
-    </div>
-
-    
+    <h3>{{ products.p_title }}</h3>
+    <h5>{{ products.u_id }}</h5>
+    <h5>{{ products.p_content }}</h5>
+    <img src= {{ url_for('static', filename='uploads/IMG_2853.jpg') }}>
 </body>
-
-</html>
