@@ -20,14 +20,23 @@
 </head>
 
 <body>
+    <h1><a href="/">Jeegle</a></h1>
+
+    {% block content %}
     <h3>제목 : {{ products.p_title }}</h3>
     <h5>작성자 : {{ products.u_id }}</h5>
     <!--로그인 되어있으면 팔로우버튼 아니면 문구-->
-    {% if session['userid'] %}
+    {% if (session['userid']) %}
+
+        {%if (session['userid']!=products.u_id)%}
         <form method="post" action="/follow">
             <input type="hidden" name="uploader" value={{products.u_id}} >
             <input type="submit" value="팔로우하기"/>
         </form>
+        {% else %}
+        {{products.u_id}}님이 작성한 글입니다.
+        {% endif %}
+
     {% else %}
         로그인을 하시면 팔로우 기능을 사용할 수 있습니다!
     {% endif %}
@@ -38,6 +47,7 @@
     {% else %} <h5>판매중인 상품입니다.</h5>
     {% endif %}
     
-    <a href="/follow">Home</a>
     <img src= {{ url_for('static', filename= products.p_img) }}>
+
+    {% endblock %}
 </body>

@@ -1,8 +1,16 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{messages[-1]}}")
+        </script>
+    {% endif %}
+{% endwith %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <title>Home Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="{{ url_for('static', filename='Css/style2.css') }}"
               rel="stylesheet"
     />
@@ -12,9 +20,18 @@
 </head>
 
 <body>
-    <h2>검색하신 제품 리스트</h2>
-    <div>
-        <table>
+    <h1><a href="/">Jeegle</a></h1>
+
+    <form action="/keywordSearch" method="POST">
+        <div class="mx-auto mt-5 searching input-group mb-3">
+            <input type="search" name="kk" class="form-control rounded-pill" placeholder="Search keyword" aria-label="Recipient's username" aria-describedby="button-addon2">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2" onclick="location.href='/keywordSearch' ">Search</button>
+        </div>
+    </form>
+
+    <h2>검색한 제품 키워드 : "{{search_key}}"</h2>
+    <div class="board_list_wrap">
+        <table class="board_list">
             <thead>
                 <tr>
                     <th>Sold</th>
@@ -26,7 +43,7 @@
                 {% for product in products %}
                 <tr>
                     <td>{{ product.p_sold }}</td>
-                    <td>{{ product.p_title }}</td>
+                    <td><a href="/show_post/{{ product.p_id }}">{{ product.p_title }}</a></td>
                     <td>{{ product.u_id }}</td>
                 </tr>
                 {% endfor %}

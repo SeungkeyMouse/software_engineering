@@ -17,33 +17,33 @@
 </head>
 
 <body>
+    {% block content %}
     <div class="board_wrap">
         <div class="board_title">
-            <strong>판매할 제품 등록</strong>
-            <p>판매하고싶은 제품을 자유롭게 등록해보세요 :)</p>
+            <strong>제품 수정</strong>
         </div>
         <div class="board_write_wrap">
             <div class="board_write">
-                <form action="{{ url_for('add_post') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url_for('edit_post', product_id = products.p_id ) }}" method="POST" enctype="multipart/form-data">
                     <div class="title">
                         <dl>
                             <dt>제목</dt>
-                            <dd><input type="text" name="p_title"></dd>
+                            <dd><input type="text" name="p_title" value={{products.p_title}}></dd>
                         </dl>
                     </div>
                     <div class="info">
                         <dl>
                             <dt>Keyword</dt>
-                            <dd><input type="text" name="p_keyword"></dd>
+                            <dd><input type="text" name="p_keyword" value={{products.p_keyword}}></dd>
                         </dl>
                         <dl>
-                            <dt>사진 첨부</dt>
-                            <dd><input type="file" name="photo"></dd>
+                            <dt>사진 수정</dt>
+                            <dd><input type="file" name="photo" value={{products.p_img}}></dd>
                         </dl>
                     </div>
                     <div class="cont">
                         <h5>내용</h5>
-                        <textarea name="p_content"></textarea>
+                        <textarea name="p_content">{{products.p_title}}</textarea>
                     </div>
                     <div class="bt_wrap">
                         <h5 style="display:inline">판매되었나요?</h5>
@@ -53,8 +53,8 @@
                 </form>
             </div>
         </div>
-
     </div>
+    {% endblock %}
 </body>
 
 </html>

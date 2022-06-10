@@ -1,4 +1,5 @@
 # from crypt import methods
+from cmath import e
 from queue import Empty
 from flask import Flask, flash, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
@@ -13,6 +14,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///gogle2.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 #파일업로드 prefix 부분만 고치면됩니다
+#승기 : '/Users/ksg19/software_engineering/venv/static'
+#지원: '/Users/jiwon/Documents/GitHub/software_engineering/venv/static'
 file_location_prefix = '/Users/ksg19/software_engineering/venv/static'
 file_location_postfix = '/uploads'
 app.config['UPLOAD_FOLDER'] = file_location_prefix+file_location_postfix
@@ -81,7 +84,7 @@ def follow():
             flash(product_uploader + "님을 팔로우하였습니다!")
     return redirect("/")
 
-# 추가(POST) - 상품 등록/수정 (승기파트) + 로그인시만 가능한 권한추가
+# 추가(POST) - 상품 등록
 @app.route('/add_post', methods = ['GET', 'POST'])
 def add_post():
 	if request.method =='GET':
@@ -105,6 +108,36 @@ def add_post():
                     user.userid
     	            )
 		db.session.add(pd)
+		db.session.commit()
+		return redirect('/')
+# 추가(POST) - 상품 등록
+@app.route('/edit_post/<int:product_id>', methods = ['GET', 'POST'])
+def edit_post(product_id):
+	if request.method =='GET':
+		if not session.get('userid'):  #로그인 세션정보('userid')가 없을 경우
+			return render_template('home.html')
+		else:#로그인 세션정보가 있을 경우		
+			return render_template('edit_post.html',products =product.query.filter_by(p_id = product_id).first())
+	else:#POST요청인경우
+		if not request.form['p_title'] or not request.form['p_keyword'] or not request.form['p_content']:
+			flash('값을 모두 입력해주세요')
+		update_product = product.query.filter_by(p_id = product_id).first()  
+		
+  
+		user = User.query.filter_by(userid = session.get('userid')).first()
+		update_product.p_title=request.form['p_title']
+		update_product.p_keyword=request.form['p_keyword']
+		update_product.p_content=request.form['p_content']
+		update_product.p_sold= "X" if request.form.get('p_sold')==None else "O"
+  
+		if not request.files['photo']:#새로입력안한경우
+			update_product.p_img= update_product.p_img
+		else:#새로입력한경우
+			f = request.files['photo']
+			f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
+			f_path = file_location_postfix + '/' + f.filename
+			update_product.p_img= f_path
+   
 		db.session.commit()
 		return redirect('/')
 
@@ -134,10 +167,10 @@ def register():
 # 키워드서치
 @app.route('/keywordSearch',methods=['POST'])
 def keywordSearch():
-    
     if request.method =='POST':
         kk=request.form['kk']
-        return render_template('keywordSearch.html',products =product.query.filter_by(p_keyword = kk).all()) 
+        return render_template('keywordSearch.html',products =product.query.filter_by(p_keyword = kk).all()
+                               , search_key = kk) 
        		
 	
 @app.route('/')
@@ -160,17 +193,21 @@ def my_page():
 	if request.method == 'POST':#=> POST요청 왔을때
 	
 			return redirect('/')
-	skey= 1
-	#print(type(skey))
-	user_id = session.get('userid')
-	#print(type(user_id))
 	user = User.query.filter_by(userid = session.get('userid')).first()
-	#print(user.id)
+	following = follower_following.query.filter_by(follower_id = session.get('userid')).all()
+	f_li=[]
+	for fd in following : 
+		pds = product.query.filter_by(u_id = fd.followee_id).all()
+		for pd in pds:
+			f_li.append(pd)
 	
+    
 	return render_template('mypage.html'
-							,  members = User.query.filter_by(userid = session.get('userid')).all()
+							, members = User.query.filter_by(userid = session.get('userid')).all()
 							, products =product.query.filter_by(u_id = user.userid).all()
-							)
+							, following = follower_following.query.filter_by(follower_id = session.get('userid')).all()
+							, f_products = f_li
+       )
 
 
 
@@ -195,7 +232,7 @@ def login():
 				session['userid'] = userid	# userid를 session에 저장한다.
 				return redirect('/')
 			else:# 쿼리 데이터가 없으면 출력
-				flash("올바른 아이디 혹인 비밀번호를 입력해주세요")
+				flash("올바른 아이디 혹은 비밀번호를 입력해주세요")
 				return redirect('/')
 		except:
 			return "dont login"	# 예외 상황 발생 시 출력
