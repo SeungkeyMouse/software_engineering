@@ -1,3 +1,11 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{messages[-1]}}")
+        </script>
+    {% endif %}
+{% endwith %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,6 +22,16 @@
 <body>
     <h3>제목 : {{ products.p_title }}</h3>
     <h5>작성자 : {{ products.u_id }}</h5>
+    <!--로그인 되어있으면 팔로우버튼 아니면 문구-->
+    {% if session['userid'] %}
+        <form method="post" action="/follow">
+            <input type="hidden" name="uploader" value={{products.u_id}} >
+            <input type="submit" value="팔로우하기"/>
+        </form>
+    {% else %}
+        로그인을 하시면 팔로우 기능을 사용할 수 있습니다!
+    {% endif %}
+
     <h5>내용 : {{ products.p_content }}</h5>
     
     {% if products.p_sold == 'O'%} <h5>이미 판매된 상품입니다.</h5>

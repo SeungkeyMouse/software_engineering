@@ -1,4 +1,5 @@
 # from crypt import methods
+from queue import Empty
 from flask import Flask, flash, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -47,7 +48,7 @@ class product(db.Model):#상품
         self.p_img = img
         self.u_id = u_id
         
-class follower_following:
+class follower_following(db.Model):
     id = db.Column(db.Integer,autoincrement = True, primary_key= True)
     follower_id = db.Column(db.String(32))#나
     followee_id = db.Column(db.String(32))#내가 팔로우하는 인간들
@@ -60,18 +61,15 @@ class follower_following:
 @app.route('/follow', methods = ['POST'])
 def follow():
     if request.method=="POST":
-        product_uploader = request.form['userid']
+        product_uploader = request.form['uploader']
         user = User.query.filter_by(userid = session.get('userid')).first()
-        
+        print(product_uploader)
         #'내'가 팔로우 해놓은 사람들 불러오기
-        f_t = follower_following.query.filter_by(userid = user.userid).all()
-        followee_list = []
-        for ft in f_t:
-            followee_list.add(f_t.follower_id)
-            
-        if product_uploader in followee_list:
-            print("이미 팔로우한회원")
-            # flash("이미 팔로우 한 회원입니다.")
+        f_t = follower_following.query.filter_by(follower_id = user.userid, followee_id=product_uploader).first()
+        print(f_t)
+        if f_t is not None:
+            # print("이미 팔로우한회원")
+            flash("이미 팔로우 한 회원입니다.")
         else:
             f_table = follower_following(
 				user.userid,
@@ -80,8 +78,8 @@ def follow():
             db.session.add(f_table)
             db.session.commit()
             #완료알림
-            # flash(product_uploader, "님을 팔로우하였습니다!")
-        
+            flash(product_uploader + "님을 팔로우하였습니다!")
+    return redirect("/")
 
 # 추가(POST) - 상품 등록/수정 (승기파트) + 로그인시만 가능한 권한추가
 @app.route('/add_post', methods = ['GET', 'POST'])
