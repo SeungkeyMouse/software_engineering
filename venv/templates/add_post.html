@@ -6,29 +6,52 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="{{ url_for('static', filename='Css/style2.css') }}"
+              rel="stylesheet"
+    />
 </head>
 
 <body>
-    <form action="{{ url_for('add_post') }}" method="POST" enctype = "multipart/form-data">
-        
-        <h3>제목:</h3>
-        <input type="text" name="p_title"><br>
-        
-        <h4>Keyword</h4>
-        <input type="text" name="p_keyword"><br>
+    <div class="board_wrap">
+        <div class="board_title">
+            <strong>판매할 제품 등록</strong>
+            <p>판매하고싶은 제품을 자유롭게 등록해보세요 :)</p>
+        </div>
+        <div class="board_write_wrap">
+            <div class="board_write">
+                <form action="{{ url_for('add_post') }}" method="POST" enctype = "multipart/form-data">
+                    <div class="title">
+                        <dl>
+                            <dt>제목</dt>
+                            <dd><input type="text" name="p_title"></dd>
+                        </dl>
+                    </div>
+                    <div class="info">
+                        <dl>
+                            <dt>Keyword</dt>
+                            <dd><input type="text" name="p_keyword"></dd>
+                        </dl>
+                        <dl>
+                            <dt>사진 첨부</dt>
+                            <dd><input type="file" name="photo"></dd>
+                        </dl>
+                    </div>
+                    <div class="cont">
+                        <h5>내용</h5>
+                        <textarea name="p_content"></textarea>
+                    <div>
 
-        <h4>사진 첨부</h4>
-        <input type="file" name="photo">
+                </form>
+            </div>
+           
 
-        <h5>내용</h5>
-        <textarea name="p_content"></textarea>
-
-        <h6>판매되었나요?</h6>
-        <input type="checkbox" name="p_sold">
-
-        <input type="submit" value="업로드" /><br>
-
-    </form>
+        </div>
+        <div class="bt_wrap">
+            <h5 style="display:inline">판매되었나요?</h5>
+            <input type="checkbox" name="p_sold"><br>
+            <input type="submit" value="업로드" />
+        </div>
+    </div>
 </body>
 
 </html>

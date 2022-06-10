@@ -40,7 +40,7 @@
             <label>Password</label>
             <input type="password" name="password" placeholder="Password">
             <button type="button" onclick="location.href='/register' ">signup</button>
-        <form>
+        </form>
 
          
         {% endif %}
@@ -54,14 +54,16 @@
             <input type="search" name="kk" class="form-control rounded-pill" placeholder="Search keyword" aria-label="Recipient's username" aria-describedby="button-addon2">
             <button class="btn btn-outline-secondary" type="submit" id="button-addon2" onclick="location.href='/keywordSearch' ">Search</button>
         </div>
-        <div class="uploadButton">
-            <button type="button" onclick="location.href='/add_post' ">상품 올리기</button>
-        </div>
     </form>
 
-    <h2>제품 list</h2>
-    <div>
-        <table>
+    <div class="uploadButton">
+        <button type="button" onclick="location.href='/add_post' ">상품 올리기</button>
+    </div>
+    
+
+    <h2>등록된 상품들</h2>
+    <div class="board_list_wrap">
+        <table class="board_list">
             <thead>
                 <tr>
                     <th>Sold</th>

@@ -130,7 +130,15 @@ def register():
 			db.session.add(user)
 			db.session.commit()
 			return redirect('/')
-		
+
+# 키워드서치
+@app.route('/keywordSearch',methods=['POST'])
+def keywordSearch():
+    
+    if request.method =='POST':
+        kk=request.form['kk']
+        return render_template('keywordSearch.html',products =product.query.filter_by(p_keyword = kk).all()) 
+       		
 	
 @app.route('/')
 def home():
@@ -166,13 +174,7 @@ def my_page():
 
 
 
-# 키워드서치
-@app.route('/keywordSearch',methods=['GET','POST'])
-def keywordSearch():
-    if request.method =='POST':
-        kk=request.form['kk']
-        return render_template('keywordSearch.html',products =product.query.filter_by(p_keyword = kk).all()) 
-        
+ 
 # 제품상세페이지
 @app.route('/show_post/<int:id>')
 def show_post(id):

@@ -44,18 +44,113 @@ input[type="button"]{
     text-align: center;
 
 }
-.product-list{
+table {
+    border-collapse: collapse;
+}
+caption {
+    display: none;
+}
+
+.bt_wrap{
+    margin-top: 30px;
+    text-align: center;
+}
+
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.board_list_wrap {
+    padding: 50px;
+
+}
+.board_list{
+    width: 100%;
+    border-top: 2px solid rgba(35, 81, 141, 0.877);
+}
+.board_list tr{
+    border-bottom: 1px solid #999;
+}
+.board_list th{
+    padding: 10px;
+    text-align: center;
+}
+.board_list td{
+    padding: 10px;
+    font-size: 14px;
+}
+.board_list td{
+    text-align: center;
+}
+
+.board_write {
+    border-top: 2px solid #000;
+
+}
+.board_write .title,
+.board_write .info {
+    padding: 15px;
+}
+.board_write .info {
+    border-top: 1px dashed #ddd;
+    border-bottom: 1px solid #000;
+    font-size: 0;
+}
+.board_write .title dl{
+    font-size: 0;
+}
+
+.board_write .info dl {
+    display: inline-block;
+    width: 50%;
+    vertical-align: middle;
+}
+.board_write .cont{
+    border-bottom: 1px solid #000
+}
+.board_write .cont textarea{
+    display: block;
+    width: 100%;
+    height: 250px;
+    padding: 15px;
+    box-sizing: border-box;
+    border: 0;
+    resize: vertical;
+}
+.board_write .title dt,
+.board_write .title dd,
+.board_write .info dt,
+.board_write .info dd {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 1.2rem;
+}
+
+.board_write .title dt,
+.board_write .info dt {
+    width: 100px;
+}
+.board_write .title dd{
+    width: calc(600px);
+}
+
+.board_write .title input[type="text"] {
+    width: 70%;
+}
+/* .product-list{
     margin-top: 90px;
     display: table;
     margin-left: auto; margin-right: auto;
 
 
-}
-.product-table{
+} */
+/* .product-table{
     width: 500px;
     border-collapse: collapse;
 }
 .product-table td{
     padding: 3px 0;
     text-align: center;
-}
+} */
