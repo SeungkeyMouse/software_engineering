@@ -1,5 +1,5 @@
 # from crypt import methods
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, flash, render_template, request, redirect, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -7,13 +7,14 @@ app = Flask(__name__)
 
 app.secret_key="123123123"
 
-# database 설정파일
+# database 설정파일x
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///gogle2.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-#파일업로드
-file_location = '/Users/jiwon/Documents/GitHub/software_engineering/venv/static/uploads'
-app.config['UPLOAD_FOLDER'] = file_location
+#파일업로드 prefix 부분만 고치면됩니다
+file_location_prefix = '/Users/ksg19/software_engineering/venv/static'
+file_location_postfix = '/uploads'
+app.config['UPLOAD_FOLDER'] = file_location_prefix+file_location_postfix
 
 db = SQLAlchemy(app)
 
@@ -55,13 +56,31 @@ class follower_following:
     def __init__(self, myid, yourid):
         self.follower_id = myid;
         self.followee_id = yourid;
+
 @app.route('/follow', methods = ['POST'])
 def follow():
     if request.method=="POST":
+        product_uploader = request.form['userid']
         user = User.query.filter_by(userid = session.get('userid')).first()
-        print(user.userid)
-     
-
+        
+        #'내'가 팔로우 해놓은 사람들 불러오기
+        f_t = follower_following.query.filter_by(userid = user.userid).all()
+        followee_list = []
+        for ft in f_t:
+            followee_list.add(f_t.follower_id)
+            
+        if product_uploader in followee_list:
+            print("이미 팔로우한회원")
+            # flash("이미 팔로우 한 회원입니다.")
+        else:
+            f_table = follower_following(
+				user.userid,
+				product_uploader
+			)
+            db.session.add(f_table)
+            db.session.commit()
+            #완료알림
+            # flash(product_uploader, "님을 팔로우하였습니다!")
         
 
 # 추가(POST) - 상품 등록/수정 (승기파트) + 로그인시만 가능한 권한추가
@@ -75,7 +94,7 @@ def add_post():
 	else:#POST요청인경우
 		f = request.files['photo']
 		f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
-		f_path = file_location + '/' + f.filename
+		f_path = file_location_postfix + '/' + f.filename
 		print(f_path)
   
 		user = User.query.filter_by(userid = session.get('userid')).first()
@@ -127,13 +146,7 @@ def home():
 	else:		
 		userid = session.get('userid') 
 		return render_template('home.html', userid=userid, products =product.query.all())
-#팔로우기능
-# @app.route('/follow')
-# def follow():
-#     if not session.get('userid'):
-#         return render_template('home.html', products =product.query.all())
-#     else:
-        
+
 
 # 마이페이지
 @app.route('/mypage', methods = ['GET', 'POST'])
@@ -181,8 +194,9 @@ def login():
 			if data is not None:	# 쿼리 데이터가 존재하면
 				session['userid'] = userid	# userid를 session에 저장한다.
 				return redirect('/')
-			else:
-				return 'Dont Login'	# 쿼리 데이터가 없으면 출력
+			else:# 쿼리 데이터가 없으면 출력
+				flash("올바른 아이디 혹인 비밀번호를 입력해주세요")
+				return redirect('/')
 		except:
 			return "dont login"	# 예외 상황 발생 시 출력
 

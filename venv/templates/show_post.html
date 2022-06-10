@@ -12,8 +12,14 @@
 </head>
 
 <body>
-    <h3>{{ products.p_title }}</h3>
-    <h5>{{ products.u_id }}</h5>
-    <h5>{{ products.p_content }}</h5>
-    <img src= {{ url_for('static', filename='uploads/IMG_2853.jpg') }}>
+    <h3>제목 : {{ products.p_title }}</h3>
+    <h5>작성자 : {{ products.u_id }}</h5>
+    <h5>내용 : {{ products.p_content }}</h5>
+    
+    {% if products.p_sold == 'O'%} <h5>이미 판매된 상품입니다.</h5>
+    {% else %} <h5>판매중인 상품입니다.</h5>
+    {% endif %}
+    
+    <a href="/follow">Home</a>
+    <img src= {{ url_for('static', filename= products.p_img) }}>
 </body>
