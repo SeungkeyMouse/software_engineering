@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key="123123123"
 
 # database 설정파일x
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///gogle2.sqlite3'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///gogle3.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 #파일업로드 prefix 부분만 고치면됩니다
@@ -73,7 +73,7 @@ def follow():
         if f_t is not None:
             db.session.delete(f_t)
             db.session.commit()
-            flash(product_uploader+ "님을 팔로우 최소했습니다.")
+            flash(product_uploader+ "님을 팔로우 취소했습니다.")
         else:
             f_table = follower_following(
 				user.userid,
