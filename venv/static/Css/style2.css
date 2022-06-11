@@ -4,7 +4,7 @@ h1 {
 
 body{
     
-    background-color: #b9d9f2;
+    background-color: #c6dcec;
     font-family: 'Roboto',sans-serif;
 }
 
@@ -139,6 +139,28 @@ a {
 .board_write .title input[type="text"] {
     width: 70%;
 }
+
+.board_view {
+    width: 100%;
+    border-top: 2px solid #000;
+}
+
+.board_view .title {
+    padding: 8px 8px;
+    border-bottom: 1px dashed #ddd;
+    font-size: 1.3rem;
+}
+.board_view .info {
+    padding: 10px;
+    border-bottom: 1px solid #999;
+}
+.board_view .cont {
+    padding: 15px;
+    border-bottom: 1px solid #000;
+    line-height: 160%;
+    font-size: 1.4rem;
+}
+
 /* .product-list{
     margin-top: 90px;
     display: table;

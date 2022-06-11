@@ -12,8 +12,8 @@
 </head>
 
 <body>
-    <h1><a href="/">Jeegle</a></h1>
-    <h2>마이페이지</h2>
+    <h1><a href="/">Bye Buy :)</a></h1><br>
+    <h2>My page</h2><br>
     <h5>내 정보</h5>
     {% for member in members %}
     <div>
@@ -23,7 +23,7 @@
         <br>
         Name: {{ member.username }}
     </div>
-    {% endfor %}
+    {% endfor %}<br>
     <h5>내가 팔로우 중인 유저와 피드</h5>
     <div>
 
@@ -32,24 +32,26 @@
             <li>{{ follower.followee_id }}</li>
         </ul>
         {% endfor %}
-        <table class="board_list">
-            <thead>
-                <tr>
-                    <th>Sold</th>
-                    <th>제목</th>
-                    <th>작성자(팔로우)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in f_products %}
-                <tr>
-                    <td>{{ product.p_sold }}</td>
-                    <td><a href="/show_post/{{ product.p_id }}">{{ product.p_title }}</a></td>
-                    <td>{{ product.u_id }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="board_list_wrap">
+            <table class="board_list">
+                <thead>
+                    <tr>
+                        <th>Sold</th>
+                        <th>제목</th>
+                        <th>작성자(팔로우)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in f_products %}
+                    <tr>
+                        <td>{{ product.p_sold }}</td>
+                        <td><a href="/show_post/{{ product.p_id }}">{{ product.p_title }}</a></td>
+                        <td>{{ product.u_id }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <h5>내가 올린 글 목록</h5>
