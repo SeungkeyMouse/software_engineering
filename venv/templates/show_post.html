@@ -35,7 +35,7 @@
                     {%if (session['userid']!=products.u_id)%}
                     <form method="post" action="/follow">
                         <input type="hidden" name="uploader" value={{products.u_id}} >
-                        <input type="submit" value="팔로우하기"/>
+                        <input type="submit" value="팔로우/취소"/>
                     </form>
                     {% else %}
                     {{products.u_id}}님이 작성한 글입니다.

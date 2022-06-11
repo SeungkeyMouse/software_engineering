@@ -71,8 +71,9 @@ def follow():
         f_t = follower_following.query.filter_by(follower_id = user.userid, followee_id=product_uploader).first()
         print(f_t)
         if f_t is not None:
-            # print("이미 팔로우한회원")
-            flash("이미 팔로우 한 회원입니다.")
+            db.session.delete(f_t)
+            db.session.commit()
+            flash(product_uploader+ "님을 팔로우 최소했습니다.")
         else:
             f_table = follower_following(
 				user.userid,
